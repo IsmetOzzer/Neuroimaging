@@ -1,0 +1,28 @@
+---
+title: "Neuroimaging"
+author: "IO"
+date: "17 01 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+```
+
+# Installing Packages
+
+```{r}
+install.packages("oro.nifti")
+install.packages("oro.dicom")
+devtools::install_github("muschellij2/fslr")
+devtools::install_github("stnava/ITKR")
+devtools::install_github("stnava/ANTsR")
+devtools::install_github("muschellij2/extrantsr")
+```
+
+##
+
+```{r}
+
+```
+
