@@ -16,6 +16,10 @@ Görsel analizi için en çok kullanılan dosya formatıdır. Beyin kesit görse
 
 DICOM'daki gibi hastane veya hasta ismini NIfTI kayıt etmez ama görsel metadata bilgileri vardır.
 
+### Additional info for other formats
+
+![](nifti_insertimage_1.png){width=50%}
+
 DICOM dosyalarını NIfTI'ye dönüştürmek için oro.dicom paketinin `dicom2nifti()` fonksiyonu kullanılır.
 
 ```{r}
@@ -153,6 +157,60 @@ orthographic(nii_t1, nii_t1_mask,
             text.cex = 1.5)
 ```
 
+## Basic Data Manipulations
+
+Addition, substraction, multiplication
+
+```{r read kirby data}
+mridir <- "Neurohacking_data-master/Kirby21/visit_1/113"  # set the directory for easy access in the code
+
+t1 <- readNIfTI(file.path(mridir, "113-01-MPRAGE.nii.gz"), 
+                reorient = F)
+```
+
+```{r}
+orthographic(t1) 
+```
+
+```{r reading the mask}
+mask <- readNIfTI(file.path(mridir, "113-01-MPRAGE_mask.nii.gz"), 
+                  reorient = F)
+
+orthographic(mask)
+```
+
+Mask is 0 for the things we don't want and 1 for the things we want, if we multiply the real image with the mask, all the areas we don't want will be 0'ed and all the area we want will be multiplied by 1 (meaning they will be themselves).
+
+```{r}
+masked_t1 <- t1*mask
+
+orthographic(masked_t1)
+```
+
+One important point is that mask and the T1 image have to be the same size. (e.g. 512 x 512 x 22 for both)
+
+#### Follow up of T1
+
+This patient had a break in between sessions (maybe went for a coffee break) and came back to do the rest of the imaging sessions.  
+
+```{r}
+t1.follow <- readNIfTI("Neurohacking_data-master/kirby21/visit_2/113/113-02-MPRAGE.nii.gz")
+
+orthographic(t1.follow)
+```
+
+In a substaction, the operation goes as follow: firstVoxel1 - followVoxel1, firstVoxel2 - followVoxel2, ...  
+
+```{r}
+t1.substacted <- t1.follow - t1
+summary(t1.substacted)
+```
+
+But the important lesion here is even if two imaging sessions are from the same person, same machine, same day 30 min apart, the results are trastically different as it is seen from the min and the max values above.
+
+```{r}
+orthographic(t1.substacted)
+```
 
 
 
@@ -160,6 +218,7 @@ orthographic(nii_t1, nii_t1_mask,
 
 
 
-### Additional info for other formats
 
-![](nifti_insertimage_1.png){width=50%}
+
+
+
