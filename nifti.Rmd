@@ -1,0 +1,34 @@
+---
+title: "The NIfTI Format"
+author: "IO"
+date: "22 02 2022"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F,
+                      fig.width = 5, fig.height = 5)
+```
+
+## NIfTI (Neuroimaging Informatics Technology Initiative)
+
+Görsel analizi için en çok kullanılan dosya formatıdır. Beyin kesit görsellerini üst üste koyarak 3 boyutlu bir array verir. DICOM ise birer kesit olarak kaydedilip birleştirilmez.  
+
+DICOM'daki gibi hastane veya hasta ismini NIfTI kayıt etmez ama görsel metadata bilgileri vardır.
+
+DICOM dosyalarını NIfTI'ye dönüştürmek için oro.dicom paketinin `dicom2nifti()` fonksiyonu kullanılır.
+
+```{r}
+library(dpylr)
+library(oro.dicom)
+
+all_slices_T1 <- readDICOM("Neurohacking_data-master/BRAINIX/DICOM/T1/")
+
+img_1 <- all_slices_T1$img[[1]]
+
+for (i in 1:length(all_slices_T1$img)) {
+  assign(x = paste0("img_", i), value = all_slices_T1$img[[i]])
+}
+```
+
+

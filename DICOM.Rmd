@@ -1,5 +1,5 @@
 ---
-title: "Neuroimaging"
+title: "DICOM"
 author: "IO"
 date: "17 01 2022"
 output: github_document
@@ -8,8 +8,6 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = F, message = F,
                       fig.width = 5, fig.height = 5)
-
-library(dplyr)
 ```
 
 # Installing Packages
@@ -38,6 +36,7 @@ Hastanelerde kullanılan standart görsel türüdür ve PACS (picture archiving 
 ![Her bir DICOM dosyası beynin bir slaytına gelecek şekilde kaydedilir](Neuroimaging_insertimage_1.png){width=50%}
 
 ```{r}
+library(dplyr)
 library(oro.dicom) #dicom dosyalarını okumak için
 
 # Read one slice
