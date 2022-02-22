@@ -31,11 +31,11 @@ Hastanelerde kullanılan standart görsel türüdür ve PACS (picture archiving 
 
 İki componenti vardır;
 
-1 Görsel datası (pixel)
-  * Pixeller matrix olarak kodlanır
-2 Meta-data (scanner boyutları, hastane ve hasta bilgileri)
+1. Görsel datası (pixel)  
+  * Pixeller matrix olarak kodlanır  
+2. Meta-data (scanner boyutları, hastane ve hasta bilgileri)
 
-![Her bir DICOM dosyası beyinde bir slayt olacak şekilde kaydelidir](Neuroimaging_insertimage_1.png){width=50%}
+![Her bir DICOM dosyası beynin bir slaytına gelecek şekilde kaydedilir](Neuroimaging_insertimage_1.png){width=50%}
 
 ```{r}
 library(oro.dicom) #dicom dosyalarını okumak için
@@ -51,14 +51,14 @@ dim(all_slices_T1$img[[1]])
 
 
 
-DICOM dosyaları okunduktan sonra büyük bir listenin içinde:
+DICOM dosyaları okunduktan sonra büyük bir listenin içinde
 
 1. header (hdr) 
   * data.frame
 2. image (img)
   * matrix
 
-listelerini olarak kaydedilir.
+listeleri kaydedilir.
 
 #### Image
 
@@ -70,12 +70,12 @@ dim(slice$img[[1]])
 
 Görselleri görmek için bu img matrixinin transposunu aldıktan sonra bunun boyutlarını (dimensions) `image()` fonksiyonuyla görselleştirebiliriz.
 
-![Transposing](Neuroimaging_insertimage_2.png){width=50%}
+![](Neuroimaging_insertimage_2.png){width=50%}  
 
 ```{r}
 d <- dim(t(slice$img[[1]])) #transposunun dimentionalarını kaydet
 
-image(x = 1:d[1], y = 1:d[2], #dimentions in the x and y axes
+image(x = 1:d[1], y = 1:d[2], #dimentions in the and y axes
       t(slice$img[[1]]),      #that 1 image in the slice
       col = gray(0:64/64))    #set the color to gray scale
 ```
@@ -89,14 +89,14 @@ slice$img[[1]][101:105, #görselin x düzleminde 101 ile 105 voxel aralığı
                121:125] #görselin y düzleminde 121 ile 125 voxel aralığı
 ```
 
-![yukarıdaki 5x5 matrixin görseldeki karşılığı](Neuroimaging_insertimage_3.png){width=50%}
+![](Neuroimaging_insertimage_3.png){width=50%}
 
 Matrixin resimdeki karşılığına baktığımızda açık renkler daha yüksek sayılara denk geliyor.  
 Sayıları başka bir yöntem olarak histogram ile inceleyebiliriz.
 
 ```{r histogram}
 hist(slice$img[[1]][,],    #no slice, everything involved
-     breaks= 50,           #everybar in the histogram holds 50 values
+     breaks= 50,           #every bar in the histogram holds 50 values
      prob = T,             #make it a density histogram, not a frequency
      col = rgb(0,0,1,1/4), #change the colors
      main = "Density histogram of the image matrix",
@@ -131,8 +131,8 @@ hdr %>%
 Pixel aralıklarını bulalım.
 
 ```{r}
-hdr[hdr$name == "PixelSpacing", # hdr name sütunu içinde PixelSpacing
-    "value"] # bu satırın value sütunundaki değeri ver
+hdr[hdr$name == "PixelSpacing", # hdr name sütunu içinde PixelSpacing'e elit olan
+    "value"] # satırın value sütunundaki değeri ver
 ```
 
 Her bir pixel karesinin kenarları .798 x .798 boyutundaymış, görselin çözünürlüğü (resolution).  

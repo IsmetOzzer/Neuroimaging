@@ -23,11 +23,14 @@ archiving and communication system) dosyalarının formatıdır.
 
 İki componenti vardır;
 
-1 Görsel datası (pixel) \* Pixeller matrix olarak kodlanır 2 Meta-data
-(scanner boyutları, hastane ve hasta bilgileri)
+1.  Görsel datası (pixel)  
+
+-   Pixeller matrix olarak kodlanır  
+
+2.  Meta-data (scanner boyutları, hastane ve hasta bilgileri)
 
 <figure>
-<img src="Neuroimaging_insertimage_1.png" style="width:50.0%" alt="Her bir DICOM dosyası beyinde bir slayt olacak şekilde kaydelidir" /><figcaption aria-hidden="true">Her bir DICOM dosyası beyinde bir slayt olacak şekilde kaydelidir</figcaption>
+<img src="Neuroimaging_insertimage_1.png" style="width:50.0%" alt="Her bir DICOM dosyası beynin bir slaytına gelecek şekilde kaydedilir" /><figcaption aria-hidden="true">Her bir DICOM dosyası beynin bir slaytına gelecek şekilde kaydedilir</figcaption>
 </figure>
 
 ``` r
@@ -48,7 +51,7 @@ dim(all_slices_T1$img[[1]])
 
     ## [1] 512 512
 
-DICOM dosyaları okunduktan sonra büyük bir listenin içinde:
+DICOM dosyaları okunduktan sonra büyük bir listenin içinde
 
 1.  header (hdr)
 
@@ -58,7 +61,7 @@ DICOM dosyaları okunduktan sonra büyük bir listenin içinde:
 
 -   matrix
 
-listelerini olarak kaydedilir.
+listeleri kaydedilir.
 
 #### Image
 
@@ -84,14 +87,12 @@ Görselleri görmek için bu img matrixinin transposunu aldıktan sonra
 bunun boyutlarını (dimensions) `image()` fonksiyonuyla
 görselleştirebiliriz.
 
-<figure>
-<img src="Neuroimaging_insertimage_2.png" style="width:50.0%" alt="Transposing" /><figcaption aria-hidden="true">Transposing</figcaption>
-</figure>
+<img src="Neuroimaging_insertimage_2.png" style="width:50.0%" />
 
 ``` r
 d <- dim(t(slice$img[[1]])) #transposunun dimentionalarını kaydet
 
-image(x = 1:d[1], y = 1:d[2], #dimentions in the x and y axes
+image(x = 1:d[1], y = 1:d[2], #dimentions in the and y axes
       t(slice$img[[1]]),      #that 1 image in the slice
       col = gray(0:64/64))    #set the color to gray scale
 ```
@@ -115,9 +116,7 @@ slice$img[[1]][101:105, #görselin x düzleminde 101 ile 105 voxel aralığı
     ## [4,]   27   28   98  239  286
     ## [5,]   12   45  170  288  307
 
-<figure>
-<img src="Neuroimaging_insertimage_3.png" style="width:50.0%" alt="yukarıdaki 5x5 matrixin görseldeki karşılığı" /><figcaption aria-hidden="true">yukarıdaki 5x5 matrixin görseldeki karşılığı</figcaption>
-</figure>
+<img src="Neuroimaging_insertimage_3.png" style="width:50.0%" />
 
 Matrixin resimdeki karşılığına baktığımızda açık renkler daha yüksek
 sayılara denk geliyor.  
@@ -125,7 +124,7 @@ Sayıları başka bir yöntem olarak histogram ile inceleyebiliriz.
 
 ``` r
 hist(slice$img[[1]][,],    #no slice, everything involved
-     breaks= 50,           #everybar in the histogram holds 50 values
+     breaks= 50,           #every bar in the histogram holds 50 values
      prob = T,             #make it a density histogram, not a frequency
      col = rgb(0,0,1,1/4), #change the colors
      main = "Density histogram of the image matrix",
@@ -188,8 +187,8 @@ hdr %>%
 Pixel aralıklarını bulalım.
 
 ``` r
-hdr[hdr$name == "PixelSpacing", # hdr name sütunu içinde PixelSpacing
-    "value"] # bu satırın value sütunundaki değeri ver
+hdr[hdr$name == "PixelSpacing", # hdr name sütunu içinde PixelSpacing'e elit olan
+    "value"] # satırın value sütunundaki değeri ver
 ```
 
     ## [1] "0.79861110448837 0.79861110448837"
