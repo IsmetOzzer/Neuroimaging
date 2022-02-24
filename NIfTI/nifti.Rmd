@@ -30,7 +30,7 @@ DICOM dosyalarını NIfTI'ye dönüştürmek için oro.dicom paketinin `dicom2ni
 library(dplyr)
 library(oro.dicom)
 
-all_slices_T1 <- readDICOM("Neurohacking_data-master/BRAINIX/DICOM/T1/")
+all_slices_T1 <- readDICOM("../Neurohacking_data-master/BRAINIX/DICOM/T1/")
 
 hdr_11 <- all_slices_T1$hdr[[11]]
 hdr_11[hdr_11$name == "PixelSpacing", "value"]
@@ -65,10 +65,10 @@ library(oro.nifti)
 writeNIfTI(nim = nii_T1,                   #write this nifti file
            filename = "Output_3D_File_11") #with this name
 
-list.files("Neurohacking_data-master/BRAINIX/NIfTI",
+list.files("../Neurohacking_data-master/BRAINIX/NIfTI",
            pattern = "Output_3D_File")
 
-nii_t1 <- readNIfTI("Neurohacking_data-master/BRAINIX/NIfTI/t1.nii.gz",
+nii_t1 <- readNIfTI("../Neurohacking_data-master/BRAINIX/NIfTI/t1.nii.gz",
                     reorient = F)
 dim(nii_t1)
 ```
@@ -166,7 +166,7 @@ orthographic(nii_t1, nii_t1_mask,
 Addition, substraction, multiplication
 
 ```{r read kirby data}
-mridir <- "Neurohacking_data-master/Kirby21/visit_1/113"  # set the directory for easy access in the code
+mridir <- "../Neurohacking_data-master/Kirby21/visit_1/113"  # set the directory for easy access in the code
 
 t1 <- readNIfTI(file.path(mridir, "113-01-MPRAGE.nii.gz"), 
                 reorient = F)
@@ -198,7 +198,7 @@ One important point is that mask and the T1 image have to be the same size. (e.g
 This patient had a break in between sessions (maybe went for a coffee break) and came back to do the rest of the imaging sessions.  
 
 ```{r}
-t1.follow <- readNIfTI("Neurohacking_data-master/kirby21/visit_2/113/113-02-MPRAGE.nii.gz")
+t1.follow <- readNIfTI("../Neurohacking_data-master/kirby21/visit_2/113/113-02-MPRAGE.nii.gz")
 
 orthographic(t1.follow)
 ```
@@ -246,7 +246,7 @@ FLAIR dosyalarında beyin kanseri gibi anormallikler T1'e kıyasla daha rahat g�
 FLAIR image
 
 ```{r}
-flairdir <- "Neurohacking_data-master/BRAINIX/NIfTI"
+flairdir <- "../Neurohacking_data-master/BRAINIX/NIfTI"
 sequence <- "FLAIR"
 
 volume.flair <- readNIfTI(file.path(flairdir, paste0(sequence, ".nii.gz")), 
