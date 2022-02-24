@@ -3,6 +3,21 @@ The NIfTI Format
 IO
 22 02 2022
 
+-   [NIfTI (Neuroimaging Informatics Technology
+    Initiative)](#nifti-neuroimaging-informatics-technology-initiative)
+    -   [Additional info for other
+        formats](#additional-info-for-other-formats)
+    -   [oro.nifti package](#oronifti-package)
+-   [Visualizations](#visualizations)
+    -   [Backmapping](#backmapping)
+        -   [Backmapping one slice](#backmapping-one-slice)
+-   [Basic Data Manipulations](#basic-data-manipulations)
+    -   [Follow up of T1](#follow-up-of-t1)
+-   [Smoothing](#smoothing)
+-   [Basic MRI Contrasts](#basic-mri-contrasts)
+    -   [FLAIR (Fluid-attenuated inversion
+        recovery)](#flair-fluid-attenuated-inversion-recovery)
+
 ## NIfTI (Neuroimaging Informatics Technology Initiative)
 
 Görsel analizi için en çok kullanılan dosya formatıdır. Beyin kesit
@@ -11,6 +26,10 @@ kesit olarak kaydedilip birleştirilmez.
 
 DICOM’daki gibi hastane veya hasta ismini NIfTI kayıt etmez ama görsel
 metadata bilgileri vardır.
+
+### Additional info for other formats
+
+<img src="nifti_insertimage_1.png" style="width:50.0%" />
 
 DICOM dosyalarını NIfTI’ye dönüştürmek için oro.dicom paketinin
 `dicom2nifti()` fonksiyonu kullanılır.
@@ -207,6 +226,171 @@ orthographic(nii_t1, nii_t1_mask,
 
 ![](nifti_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
-### Additional info for other formats
+## Basic Data Manipulations
 
-![](nifti_insertimage_1.png)
+Addition, substraction, multiplication
+
+``` r
+mridir <- "Neurohacking_data-master/Kirby21/visit_1/113"  # set the directory for easy access in the code
+
+t1 <- readNIfTI(file.path(mridir, "113-01-MPRAGE.nii.gz"), 
+                reorient = F)
+```
+
+``` r
+orthographic(t1)
+```
+
+![](nifti_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+``` r
+mask <- readNIfTI(file.path(mridir, "113-01-MPRAGE_mask.nii.gz"), 
+                  reorient = F)
+
+orthographic(mask)
+```
+
+![](nifti_files/figure-gfm/reading%20the%20mask-1.png)<!-- -->
+
+Mask is 0 for the things we don’t want and 1 for the things we want, if
+we multiply the real image with the mask, all the areas we don’t want
+will be 0’ed and all the area we want will be multiplied by 1 (meaning
+they will stay as).
+
+``` r
+masked_t1 <- t1*mask
+
+orthographic(masked_t1)
+```
+
+![](nifti_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+One important point is that mask and the T1 image have to be the same
+size. (e.g. 512 x 512 x 22 for both)
+
+#### Follow up of T1
+
+This patient had a break in between sessions (maybe went for a coffee
+break) and came back to do the rest of the imaging sessions.
+
+``` r
+t1.follow <- readNIfTI("Neurohacking_data-master/kirby21/visit_2/113/113-02-MPRAGE.nii.gz")
+
+orthographic(t1.follow)
+```
+
+![](nifti_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+In a substaction, the operation goes as follow: firstVoxel1 -
+followVoxel1, firstVoxel2 - followVoxel2, …
+
+``` r
+t1.substacted <- t1.follow - t1
+summary(t1.substacted)
+```
+
+    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    ## -2155505    -6625        0   -26652     1839  2158811
+
+But the important lesion here is even if two imaging sessions are from
+the same person, same machine, same day 30 min apart, the results are
+drastically different as it is seen from the min and the max values
+above.
+
+``` r
+orthographic(t1.substacted)
+```
+
+![](nifti_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+## Smoothing
+
+Beyin resminde görüntülemeden bağımsız bir şekilde rastgele oluşan
+varyanslar (noise) ile başa çıkmak için smoothing yapılır. Bunu da
+Gaussian kernel denilen bir formül ile yaparız. Bu formüldeki değer ne
+kadar büyükse görüntü o kadar sıvanır ve blurlaşır.
+
+``` r
+t1.smooth <- AnalyzeFMRI::GaussSmoothArray(t1,                #t1 array'i
+                                           voxdim = c(1,1,1), #voxel boyutları (dimensions)
+                                           ksize = 11,        #kernel size
+                                           sigma = diag(3,3), #how symmetric the kernel is
+                                           mask = NULL,
+                                           var.norm = F)
+
+orthographic(t1.smooth)
+```
+
+![](nifti_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+Fazla smoothing görsel çözünürlüğünü düşürür. Genelde 3-4 farklı kernel
+size (e.g., 5, 10, 20) uygulamaları yapılıp görsellerin incelenmesi
+sonucunda bir tanesi inceleme türü dikkate alınarak tercih edilir.
+
+Bir görselin içindeki yoğunlukları (intensity) değiştirip farklı bir
+görünüme kavuşturmaya transformation denir. Bu da beyaz veya siyah
+alanların nasıl görüneceğini (değişeceğini) ayarlamaya yarar.
+
+## Basic MRI Contrasts
+
+### FLAIR (Fluid-attenuated inversion recovery)
+
+FLAIR dosyalarında beyin kanseri gibi anormallikler T1’e kıyasla daha
+rahat gözlemlenebilir.
+
+FLAIR image
+
+``` r
+flairdir <- "Neurohacking_data-master/BRAINIX/NIfTI"
+sequence <- "FLAIR"
+
+volume.flair <- readNIfTI(file.path(flairdir, paste0(sequence, ".nii.gz")), 
+                      reorient = F)
+
+volume.flair <- cal_img(volume.flair)
+
+image(volume.flair, 
+      z = 12,
+      plot.type = "single")
+```
+
+![](nifti_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+T1 weighted image
+
+``` r
+sequence.t1 <- "T1"
+
+volume.t1 <- readNIfTI(file.path(flairdir, paste0(sequence.t1, ".nii.gz")),
+                       reorient = F)
+
+volume.t1 <- cal_img(volume.t1)
+
+image(volume.t1, 
+      z = 12,
+      plot.type = "single")
+```
+
+![](nifti_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+T2-weighted image
+
+``` r
+sequence.t2 <- "T2"
+
+volume.t2 <- readNIfTI(file.path(flairdir, paste0(sequence.t2)),
+          reorient = F)
+
+image(volume.t2,
+      z = 12,
+      plot.type = "single")
+```
+
+![](nifti_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+
+<img src="nifti_insertimage_3.png" style="width:50.0%" />
+
+Ym(V): intensity of the image V is the particulat voxel of interest m is
+the contrast
+
+An MRI sequence and an MRI contrast refer to the same thing.

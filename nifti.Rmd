@@ -2,7 +2,11 @@
 title: "The NIfTI Format"
 author: "IO"
 date: "22 02 2022"
-output: github_document
+output: 
+  github_document:
+    toc: true
+    toc_depth: 5
+  
 ---
 
 ```{r setup, include=FALSE}
@@ -169,7 +173,7 @@ t1 <- readNIfTI(file.path(mridir, "113-01-MPRAGE.nii.gz"),
 ```
 
 ```{r}
-orthographic(t1) 
+orthographic(t1)
 ```
 
 ```{r reading the mask}
@@ -179,7 +183,7 @@ mask <- readNIfTI(file.path(mridir, "113-01-MPRAGE_mask.nii.gz"),
 orthographic(mask)
 ```
 
-Mask is 0 for the things we don't want and 1 for the things we want, if we multiply the real image with the mask, all the areas we don't want will be 0'ed and all the area we want will be multiplied by 1 (meaning they will be themselves).
+Mask is 0 for the things we don't want and 1 for the things we want, if we multiply the real image with the mask, all the areas we don't want will be 0'ed and all the area we want will be multiplied by 1 (meaning they will stay as).
 
 ```{r}
 masked_t1 <- t1*mask
@@ -206,19 +210,87 @@ t1.substacted <- t1.follow - t1
 summary(t1.substacted)
 ```
 
-But the important lesion here is even if two imaging sessions are from the same person, same machine, same day 30 min apart, the results are trastically different as it is seen from the min and the max values above.
+But the important lesion here is even if two imaging sessions are from the same person, same machine, same day 30 min apart, the results are drastically different as it is seen from the min and the max values above.
 
 ```{r}
 orthographic(t1.substacted)
 ```
 
+## Smoothing
+
+Beyin resminde görüntülemeden bağımsız bir şekilde rastgele oluşan varyanslar (noise) ile başa çıkmak için smoothing yapılır. Bunu da Gaussian kernel denilen bir formül ile yaparız. Bu formüldeki değer ne kadar büyükse görüntü o kadar sıvanır ve blurlaşır. 
+
+```{r}
+t1.smooth <- AnalyzeFMRI::GaussSmoothArray(t1,                #t1 array'i
+                                           voxdim = c(1,1,1), #voxel boyutları (dimensions)
+                                           ksize = 11,        #kernel size
+                                           sigma = diag(3,3), #how symmetric the kernel is
+                                           mask = NULL,
+                                           var.norm = F)
+
+orthographic(t1.smooth)
+```
+
+Fazla smoothing görsel çözünürlüğünü düşürür. Genelde 3-4 farklı kernel size (e.g., 5, 10, 20) uygulamaları yapılıp görsellerin incelenmesi sonucunda bir tanesi inceleme türü dikkate alınarak tercih edilir.
 
 
+Bir görselin içindeki yoğunlukları (intensity) değiştirip farklı bir görünüme kavuşturmaya transformation denir. Bu da beyaz veya siyah alanların nasıl görüneceğini (değişeceğini) ayarlamaya yarar.
 
 
+## Basic MRI Contrasts
 
+### FLAIR (Fluid-attenuated inversion recovery)
 
+FLAIR dosyalarında beyin kanseri gibi anormallikler T1'e kıyasla daha rahat gözlemlenebilir.  
 
+FLAIR image
 
+```{r}
+flairdir <- "Neurohacking_data-master/BRAINIX/NIfTI"
+sequence <- "FLAIR"
 
+volume.flair <- readNIfTI(file.path(flairdir, paste0(sequence, ".nii.gz")), 
+                      reorient = F)
 
+volume.flair <- cal_img(volume.flair)
+
+image(volume.flair, 
+      z = 12,
+      plot.type = "single")
+```
+
+T1 weighted image
+
+```{r}
+sequence.t1 <- "T1"
+
+volume.t1 <- readNIfTI(file.path(flairdir, paste0(sequence.t1, ".nii.gz")),
+                       reorient = F)
+
+volume.t1 <- cal_img(volume.t1)
+
+image(volume.t1, 
+      z = 12,
+      plot.type = "single")
+```
+
+T2-weighted image
+
+```{r}
+sequence.t2 <- "T2"
+
+volume.t2 <- readNIfTI(file.path(flairdir, paste0(sequence.t2)),
+          reorient = F)
+
+image(volume.t2,
+      z = 12,
+      plot.type = "single")
+```
+
+![](nifti_insertimage_3.png){width=50%}
+
+Ym(V): intensity of the image  
+V is the particulat voxel of interest  
+m is the contrast 
+
+An MRI sequence and an MRI contrast refer to the same thing.
