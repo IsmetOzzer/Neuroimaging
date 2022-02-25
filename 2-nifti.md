@@ -29,7 +29,7 @@ metadata bilgileri vardır.
 
 ### Additional info for other formats
 
-<img src="nifti_insertimage_1.png" style="width:50.0%" />
+<img src=NIfTI/nifti_insertimage_1.png" style="width:50.0%" />
 
 DICOM dosyalarını NIfTI’ye dönüştürmek için oro.dicom paketinin
 `dicom2nifti()` fonksiyonu kullanılır.
@@ -388,7 +388,7 @@ image(volume.t2,
 
 ![](nifti_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
-<img src="nifti_insertimage_3.png" style="width:50.0%" />
+<img src="NIfTI/nifti_insertimage_3.png" style="width:50.0%" />
 
 Ym(V): intensity of the image V is the particulat voxel of interest m is
 the contrast

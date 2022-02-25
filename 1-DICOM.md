@@ -30,7 +30,7 @@ archiving and communication system) dosyalarının formatıdır.
 2.  Meta-data (scanner boyutları, hastane ve hasta bilgileri)
 
 <figure>
-<img src="Neuroimaging_insertimage_1.png" style="width:50.0%" alt="Her bir DICOM dosyası beynin bir slaytına gelecek şekilde kaydedilir" /><figcaption aria-hidden="true">Her bir DICOM dosyası beynin bir slaytına gelecek şekilde kaydedilir</figcaption>
+<img src="DICOM/Neuroimaging_insertimage_1.png" style="width:50.0%" alt="Her bir DICOM dosyası beynin bir slaytına gelecek şekilde kaydedilir" /><figcaption aria-hidden="true">Her bir DICOM dosyası beynin bir slaytına gelecek şekilde kaydedilir</figcaption>
 </figure>
 
 ``` r
@@ -87,7 +87,7 @@ Görselleri görmek için bu img matrixinin transposunu aldıktan sonra
 bunun boyutlarını (dimensions) `image()` fonksiyonuyla
 görselleştirebiliriz.
 
-<img src="Neuroimaging_insertimage_2.png" style="width:50.0%" />
+<img src="DICOM/Neuroimaging_insertimage_2.png" style="width:50.0%" />
 
 ``` r
 d <- dim(t(slice$img[[1]])) #transposunun dimentionalarını kaydet
@@ -116,7 +116,7 @@ slice$img[[1]][101:105, #görselin x düzleminde 101 ile 105 voxel aralığı
     ## [4,]   27   28   98  239  286
     ## [5,]   12   45  170  288  307
 
-<img src="Neuroimaging_insertimage_3.png" style="width:50.0%" />
+<img src="DICOM/Neuroimaging_insertimage_3.png" style="width:50.0%" />
 
 Matrixin resimdeki karşılığına baktığımızda açık renkler daha yüksek
 sayılara denk geliyor.  
