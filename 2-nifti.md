@@ -29,7 +29,7 @@ metadata bilgileri vardır.
 
 ### Additional info for other formats
 
-<img src=NIfTI/nifti_insertimage_1.png" style="width:50.0%" />
+<img src="NIfTI/nifti_insertimage_1.png" style="width:50.0%" />
 
 DICOM dosyalarını NIfTI’ye dönüştürmek için oro.dicom paketinin
 `dicom2nifti()` fonksiyonu kullanılır.
@@ -390,7 +390,8 @@ image(volume.t2,
 
 <img src="NIfTI/nifti_insertimage_3.png" style="width:50.0%" />
 
-Ym(V): intensity of the image V is the particulat voxel of interest m is
-the contrast
+Ym(V): intensity of the image  
+V: the particular voxel of interest  
+m: the contrast
 
 An MRI sequence and an MRI contrast refer to the same thing.
